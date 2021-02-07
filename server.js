@@ -2,6 +2,8 @@ var express = require("express");
 var app = express();
 var cfenv = require("cfenv");
 var bodyParser = require('body-parser')
+const dataProcessor = require('./options/data-processor')
+const scheduler = require('./options/scheduler')
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -188,6 +190,26 @@ if(cloudant) {
 //serve static file (index.html, images, css)
 app.use(express.static(__dirname + '/views'));
 
+app.get('/options', (req, res) => {
+  dataProcessor.getOptionsData()
+  .then(data => {
+    res.send(data);
+  })
+})
+
+app.get('/createdb', (req, res) => {
+  dataProcessor.createDb()
+  .then(data => {
+    res.send(data);
+  })
+})
+
+app.get('/getoptionshist', (req, res) => {
+  dataProcessor.getOptionsHist()
+  .then(data => {
+    res.send(data);
+  })
+})
 
 
 var port = process.env.PORT || 3000
