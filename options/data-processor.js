@@ -6,13 +6,14 @@ const months = ['Jan', 'Feb']
 
 module.exports = {
 	getOptionsData: getOptionsData, createDb: createDb,
-	getOptionsHist: getOptionsHist
+	getOptionsHist: getOptionsHist, getFormattedDate: getFormattedDate
 }
 
 const niftyUrl = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY";
 
 const edwsUrl = "https://ewmw.edelweiss.in/api/Market/optionchaindetails";
 let edwsPayload = {"exp": getNextThuDate(), "aTyp": "OPTIDX", "uSym": "NIFTY"}
+let edwsPayloadBankNifty = {"exp": getNextThuDate(), "aTyp": "OPTIDX", "uSym": "BANKNIFTY"}
 
 
 function getNextThuDate() {
@@ -70,10 +71,10 @@ async function createDb() {
 	}	
 }
 
-async function getOptionsData() {
+async function getOptionsData(instrument) {
 	try{
 		console.log('start request')
-		let result = await axiosPost(edwsUrl, edwsPayload);//testaxiosGet(); //
+		let result = await axiosPost(edwsUrl, instrument === 1 ? edwsPayloadBankNifty : edwsPayload);//testaxiosGet(); //
 
 		let optionsData = result.opChn;		
 		
@@ -102,7 +103,7 @@ async function getOptionsData() {
 
 		addFinalCalc(sums);
 
-		insertToDb(sums);
+		insertToDb(sums, instrument);
 
 		return {sum: sums, elems: filtered};
 	} catch(err) {
@@ -145,7 +146,7 @@ function parseInt1(str) {
 	return str ? parseFloat(str) : 0;
 }
 
-function insertToDb(sums) {	
+function insertToDb(sums, instrument) {	
 	let db = new sqlite3.Database('./db/options.db', (err) => {
 	  if (err) {
 	    console.error(err.message);
@@ -157,7 +158,7 @@ function insertToDb(sums) {
 							` call_oi, call_chg_oi, call_vol, ` + 
 							` putcalldiff, time, ` +
 							` date, hour, min) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-			[parseFloat(sums.PEOI).toFixed(2), parseFloat(sums.PEchangeinOI).toFixed(2), parseFloat(sums.PEvolume).toFixed(2),
+			[parseFloat(sums.PEOI).toFixed(2), parseFloat(sums.PEchangeinOI).toFixed(2), instrument,
 			 parseFloat(sums.CEOI).toFixed(2), parseFloat(sums.CEchangeinOI).toFixed(2), parseFloat(sums.CEvolume).toFixed(2), 
 			 parseFloat(sums.putCallDiff).toFixed(2), sums.time,
 			 sums.dateObj.date, sums.dateObj.hour, sums.dateObj.min], function(err) {
@@ -178,7 +179,7 @@ function insertToDb(sums) {
 	return;
 }
 
-function getOptionsHist() {
+function getOptionsHist(intDate, instrument) {
 	return new Promise((resolve, reject) => {
 		let db = new sqlite3.Database('./db/options.db', (err) => {
 		  if (err) {
@@ -187,7 +188,9 @@ function getOptionsHist() {
 		  console.log('Connected to the options database.');
 		});
 
-		db.all("select * from hist order by date desc, hour desc, min desc", [], (err, rows) => {
+		db.all("select * from hist where date >= ? and put_vol = ?  and hour >= 9 and min >= 15 " + 
+				"order by date desc, hour desc, min desc", 
+			[intDate, instrument], (err, rows) => {
 		  if (err) {
 		  	console.error(err);
 		  } else {

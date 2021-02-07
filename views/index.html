@@ -1,43 +1,11 @@
 <html>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="/optionsjs/optchart.js"></script>
 <script>
 	//obj = { table: "customers", limit: 20 };
 	//dbParam = JSON.stringify(obj);
 	startRefreshTimer();
 	console.log('start')
-	let xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange = function() {
-	  if (xmlhttp.readyState === 4) {
-	  	console.log('get resp')
-	    let myObj = JSON.parse(this.responseText);
-	    var txt = '';
-	    txt += "<table border='1'>"
-	    txt += "<tr><th>Time</th>" + 
-	    		"<th>Call Vol</th><th>Call OI</th><th>Call OI chg</th>" + 
-	    		"<th>Put Vol</th><th>Put OI</th><th>Put OI chg</th>" + 
-	    		"<th>Put-Call OI-change Diff</th></tr>"
-	    for (x in myObj) {
-	      txt += "<tr><td>" + myObj[x].time + "</td>";
-	      txt += "<td>" + myObj[x].call_vol + "</td>";
-	      txt += "<td>" + myObj[x].call_oi + "</td>";
-	      txt += "<td>" + myObj[x].call_chg_oi + "</td>";
-
-	      txt += "<td>" + myObj[x].put_vol + "</td>";
-	      txt += "<td>" + myObj[x].put_oi + "</td>";
-	      txt += "<td>" + myObj[x].put_chg_oi + "</td>";
-	      
-	      txt += '<td style="align:right">' + myObj[x].putcalldiff + "</td></tr>";
-	    }
-	    txt += "</table>"
-	    document.getElementById("demo").innerHTML = txt;
-	  }
-	}
-
-	xmlhttp.onerror = function() {
-		console.log('error')
-	}
-	xmlhttp.open("GET", "/getoptionshist");
-	xmlhttp.setRequestHeader("Content-type", "application/json");
-	xmlhttp.send();
 
 	function startRefreshTimer() {
 		var datetime = new Date();
@@ -49,7 +17,7 @@
 			refreshPage(30000);
 		} else {
 			var fwd = Math.max((5 - mins%5)%5 * 60000, 30000);
-			console.log('not refreshing at 'mins + ':' + secs + '. Check back in ' + fwd/1000)
+			console.log('not refreshing at ' + mins + ':' + secs + '. Check back in ' + fwd/1000)
 			setTimeout(startRefreshTimer, fwd);
 		}		
 	}
@@ -77,10 +45,14 @@
 		xmlhttp.send();
 	}
 </script>
-
-	Only for Nearest Weekly Nifty Options -- 
-	<div id="refresher"><a href="#" onclick="getLatestData()">Get Latest Data</a> </div>
-	<div id="msg"></div>
-	<div id="demo">
-	</div>
+	<body>
+		Only for Nearest Weekly Options -- 
+		<div id="instrument">NIFTY</div>
+		<a href="#" onclick="changeInstrument()">Switch</a>
+		<div id="my_dataviz"></div>
+		<div id="refresher"><a href="#" onclick="getLatestData()">Get Latest Data</a> </div>
+		<div id="msg"></div>
+		<div id="demo">
+		</div>
+	</body>
 </html>

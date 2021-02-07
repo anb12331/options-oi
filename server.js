@@ -190,8 +190,9 @@ if(cloudant) {
 //serve static file (index.html, images, css)
 app.use(express.static(__dirname + '/views'));
 
-app.get('/options', (req, res) => {
-  dataProcessor.getOptionsData()
+app.get('/options/:instrument', (req, res) => {
+  var instrument = req.params.instrument === 'BANKNIFTY' ? 1 : 0;
+  dataProcessor.getOptionsData(instrument)
   .then(data => {
     res.send(data);
   })
@@ -204,8 +205,12 @@ app.get('/createdb', (req, res) => {
   })
 })
 
-app.get('/getoptionshist', (req, res) => {
-  dataProcessor.getOptionsHist()
+app.get('/getoptionshist/:instrument', (req, res) => {
+  let dateObj = dataProcessor.getFormattedDate();
+
+  var instrument = req.params.instrument === 'BANKNIFTY' ? 1 : 0;
+
+  dataProcessor.getOptionsHist(dateObj.date, instrument)
   .then(data => {
     res.send(data);
   })
