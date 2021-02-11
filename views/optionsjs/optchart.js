@@ -96,12 +96,17 @@ function startLoad() {
   })
 }
 function processData(data, smaPeriod) {
-  var dateParser = d3.timeParse("%Y-%m-%d %H:%M");  
+  var dateParser2 = d3.timeParse("%Y%m%d %H:%M");  
+  var dateParser1 = d3.timeParse("%Y-%m-%d %H:%M");  
 
   for(var i = 0; i < data.length; i++) {
     var row = data[i];
 
-    row.parsedDate = dateParser(row.time);
+    row.parsedDate = dateParser1(row.time);
+
+    if(!row.parsedDate) {
+      row.parsedDate = dateParser2(row.time);      
+    }    
     
     var sum = 0;
     var count = 0;

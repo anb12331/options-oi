@@ -188,7 +188,7 @@ function getOptionsHist(intDate, instrument) {
 		  console.log('Connected to the options database.');
 		});
 
-		db.all("select * from hist where date >= ? and put_vol = ?  and hour >= 9 and min >= 15 " + 
+		db.all("select * from hist where date >= ? and put_vol = ?  and hour >= 9 " + 
 				"order by date desc, hour desc, min desc", 
 			[intDate, instrument], (err, rows) => {
 		  if (err) {
