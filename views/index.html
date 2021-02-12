@@ -12,7 +12,7 @@
 		var mins = datetime.getMinutes();
 		var secs = datetime.getSeconds();
 
-		if(mins%5 === 0 && secs > 30) {
+		if(mins%5 === 0 && secs >= 30) {
 			console.log('refreshing at + ' + mins + ':' + secs + 'in 30s')
 			refreshPage(30000);
 		} else {

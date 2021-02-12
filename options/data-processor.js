@@ -6,19 +6,26 @@ const months = ['Jan', 'Feb']
 
 module.exports = {
 	getOptionsData: getOptionsData, createDb: createDb,
-	getOptionsHist: getOptionsHist, getFormattedDate: getFormattedDate
+	getOptionsHist: getOptionsHist, getFormattedDate: getFormattedDate,
+	getNextThuDate: getNextThuDate
 }
 
 const niftyUrl = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY";
 
 const edwsUrl = "https://ewmw.edelweiss.in/api/Market/optionchaindetails";
-let edwsPayload = {"exp": getNextThuDate(), "aTyp": "OPTIDX", "uSym": "NIFTY"}
-let edwsPayloadBankNifty = {"exp": getNextThuDate(), "aTyp": "OPTIDX", "uSym": "BANKNIFTY"}
+let edwsPayload = {"exp": "18 Feb 2021", "aTyp": "OPTIDX", "uSym": "NIFTY"} //getNextThuDate()
+let edwsPayloadBankNifty = {"exp": "18 Feb 2021", "aTyp": "OPTIDX", "uSym": "BANKNIFTY"}
 
 
 function getNextThuDate() {
 	let today = getIndianDateTime();
+
+	console.log('System time is: ' + new Date().toString());
+	console.log('IST Time now is:' + today.toString());
+
 	let dayOfWeek = today.getDay();
+
+	console.log('Day of week is: ' + dayOfWeek);
 
 	if(dayOfWeek === 0) dayOfWeek = 7;
 
@@ -32,7 +39,8 @@ function getNextThuDate() {
 	let year = today.getFullYear();
 
 	let result = `${day} ${month} ${year}`;
-	console.log(result)
+	
+	console.log('Final date is ' + result)
 
 	return result;
 }
@@ -188,8 +196,8 @@ function getOptionsHist(intDate, instrument) {
 		  console.log('Connected to the options database.');
 		});
 
-		db.all("select * from hist where date >= ? and put_vol = ?  and hour >= 9 " + 
-				"order by date desc, hour desc, min desc", 
+		db.all("select * from hist where date >= ? and put_vol = ?  and hour >= 9 and hour <= 15 " + 
+				" order by date desc, hour desc, min desc ", 
 			[intDate, instrument], (err, rows) => {
 		  if (err) {
 		  	console.error(err);

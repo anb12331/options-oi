@@ -42,7 +42,7 @@ app.get('/getoptionshist/:instrument', (req, res) => {
 
 app.get('/testscheduler', (req, res) => {
   scheduler.jobToRun();
-  res.send("Job started. Check logs.");
+  res.send("Job started. Check logs. Next Thu date is: " + dataProcessor.getNextThuDate());
 })
 
 
