@@ -17,4 +17,5 @@ The important files are:
 6. db/options.db (this is a SQLITE3 file - all options data is stored here)
 7. package.json  
 
+
 Please ignore all other files. They are for deploying to ibm cloud
