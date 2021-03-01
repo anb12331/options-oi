@@ -11,7 +11,7 @@ function changeInstrument() {
 
 startLoad();
 
-function startLoad() {
+function startLoad(integerdate) {
   var instrument = 'NIFTY';
 
   var div = document.getElementById("instrument")
@@ -19,7 +19,10 @@ function startLoad() {
     instrument = div.innerHTML;  
   }
   console.log('start chart')
-  d3.json("/getoptionshist/" + instrument, //"test.csv",
+
+  let date = integerdate ? "/" + integerdate : ""
+
+  d3.json("/getoptionshist/" + instrument + date, //"test.csv",
   //"https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",  
   //d3.csv("/getoptionshist",
 

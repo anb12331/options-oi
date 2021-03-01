@@ -24,7 +24,9 @@
 
 	function refreshPage(time) {
 		setTimeout(function() {
-			window.location.reload();
+			if(document.getElementById("autoRefreshCheckbox").checked) {
+				window.location.reload();
+			}
 		}, time ? time : 10000);
 	}
 
@@ -33,23 +35,29 @@
 		document.getElementById("msg").innerHTML = "Loading in 10s....";
 		let xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
-			refreshPage();
+			refreshPage(10000);
 		}
 		
 		xmlhttp.onerror = function() {
 			console.log('error');
 		}
 
-		xmlhttp.open("GET", "/options");
+		xmlhttp.open("GET", "/testscheduler");
 		xmlhttp.setRequestHeader("Content-type", "application/json");
 		xmlhttp.send();
 	}
 </script>
 	<body>
 		Only for Nearest Weekly Options -- 
+		<input type ="checkbox" id = "autoRefreshCheckbox" checked="checked">Auto-Refresh
 		<div id="instrument">NIFTY</div>
 		<a href="#" onclick="changeInstrument()">Switch</a>
-		<div id="my_dataviz"></div>
+		<div style="width: 100%; overflow: hidden;">
+			<div id="my_dataviz" style="float: left"></div>
+			<div><input id="hist"/>
+				<button onclick="startLoad(document.getElementById('hist').value)"/>Submit</button>
+			</div>
+		</div>
 		<div id="refresher"><a href="#" onclick="getLatestData()">Get Latest Data</a> </div>
 		<div id="msg"></div>
 		<div id="demo">
