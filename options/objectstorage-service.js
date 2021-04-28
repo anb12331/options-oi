@@ -44,7 +44,7 @@ function uploadFile(filename, path, callback) {
 
 		console.log('Upload file with name, size:', filename, fileData.length)
 
-		var params = {Bucket: 'test202103161144', Key: filename, Body: fileData};
+		var params = {Bucket: 'backup202103161144', Key: filename, Body: fileData};
 		cos.upload(params, function(err, data) {
 		  console.log(err, data);
           if(callback) callback(err, data);

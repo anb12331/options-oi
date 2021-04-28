@@ -1,5 +1,5 @@
 ---
 applications:
- - name: GetStarted9ek3n0z
+ - name: GetStarted9ek3n0z2
    random-route: true
    memory: 128M
