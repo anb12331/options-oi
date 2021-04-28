@@ -10,15 +10,18 @@ const niftyUrl = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY
 const edwsUrl = "https://ewmw.edelweiss.in/api/Market/optionchaindetails";
 
 
-async function getOptionsData(instrument) {
+async function getOptionsData(instrument, weekOffset) {
 	try{
 		console.log('start request')
+		let edwsPayload;
 
-		let edwsPayload = {"exp": time.getNextThuDate(), "aTyp": "OPTIDX", "uSym": "NIFTY"} //getNextThuDate()
-		let edwsPayloadBankNifty = {"exp": time.getNextThuDate(), "aTyp": "OPTIDX", "uSym": "BANKNIFTY"}
-
-
-		let result = await axiosPost(edwsUrl, instrument === 1 ? edwsPayloadBankNifty : edwsPayload);//testaxiosGet(); //
+		if(instrument === 1) {
+			edwsPayload = {"exp": time.getNextThuDate(weekOffset), "aTyp": "OPTIDX", "uSym": "BANKNIFTY"}
+		} else {
+			edwsPayload = {"exp": time.getNextThuDate(weekOffset), "aTyp": "OPTIDX", "uSym": "NIFTY"} //getNextThuDate()
+		}
+		
+		let result = await axiosPost(edwsUrl, edwsPayload);//testaxiosGet(); //
 
 		let optionsData = result.opChn;		
 		
@@ -48,10 +51,11 @@ async function getOptionsData(instrument) {
 		addFinalCalc(sums);
 
 		dbService.insertToDb(sums, instrument);
-
+		
+		sums.payload = edwsPayload;
 		return {sum: sums, elems: filtered};
 	} catch(err) {
-		console.log(err);
+		console.log(err.message);
 	}	
 }
 

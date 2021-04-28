@@ -4,7 +4,10 @@ module.exports = {getNextThuDate: getNextThuDate, getFormattedTimeIST: getFormat
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-function getNextThuDate() {
+function getNextThuDate(weekOffset) {
+
+	if(!weekOffset) weekOffset = 0;
+
 	let today = getIndianDateTime();
 
 	console.log('System time is: ' + new Date().toString());
@@ -16,7 +19,7 @@ function getNextThuDate() {
 
 	if(dayOfWeek === 0) dayOfWeek = 7;
 
-	today.setDate(today.getDate() + (dayOfWeek <= 4 ? 4 - dayOfWeek : 7 - dayOfWeek + 4));
+	today.setDate(today.getDate() + (dayOfWeek <= 4 ? 4 - dayOfWeek : 7 - dayOfWeek + 4) + weekOffset * 7);
 
 	let dayOfMonth = today.getDate();
 	let day = dayOfMonth < 10 ? "0" + dayOfMonth.toString() : dayOfMonth.toString();
@@ -28,6 +31,10 @@ function getNextThuDate() {
 	let result = `${day} ${month} ${year}`;
 	
 	console.log('Final date is ' + result)
+
+	if(result === '11 Mar 2021') {
+		result = '10 Mar 2021';
+	}
 
 	return result;
 }

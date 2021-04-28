@@ -124,6 +124,8 @@ function processData(data, smaPeriod) {
     }
 
     row.sma = sum/count
+
+    row.pcd_nrmlz = row.putcalldiff * 100 / (row.call_chg_oi + row.put_chg_oi)
   }
 
   return data;
@@ -134,14 +136,14 @@ function createTable(tableData, direction) {
     if(direction === 'reverse') {
       tableData.reverse();
     }
-
+    document.getElementById("demo").innerHTML = 'Trying to load data...';
     let myObj = tableData;
       var txt = '';
       txt += "<table border='1'>"
       txt += "<tr><th>Time</th>" + 
           "<th>Call Vol</th><th>Call OI</th><th>Call OI chg</th>" + 
           "<th>Put Vol</th><th>Put OI</th><th>Put OI chg</th>" + 
-          "<th>SMA20</th><th>Put-Call OI-change Diff</th></tr>"
+          "<th>SMA20</th><th>Put-Call OI-change Diff</th><th>PC-Diff by PC-Sum</th></tr>"
       for (x in myObj) {
         txt += "<tr><td>" + myObj[x].time + "</td>";
         txt += "<td>" + myObj[x].call_vol + "</td>";
@@ -153,7 +155,10 @@ function createTable(tableData, direction) {
         txt += "<td>" + myObj[x].put_chg_oi + "</td>";
         txt += "<td>" + myObj[x].sma + "</td>";
         
-        txt += '<td style="align:right">' + myObj[x].putcalldiff + "</td></tr>";
+        txt += '<td style="align:right">' + myObj[x].putcalldiff + "</td>";
+        txt += '<td>' + myObj[x].pcd_nrmlz.toFixed(2) + "</td>";
+
+        txt += "</tr>";
       }
       txt += "</table>"
       document.getElementById("demo").innerHTML = txt;
