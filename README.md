@@ -1,12 +1,15 @@
-A. Install Nodejs - https://nodejs.org/en/download/
+# Put Call OI Difference for Options
+This Node JS application calculates the Put/Call Open Interest difference (similar to Put Call Ratio, or PCR) for Nifty and BankNifty options, averaging on nearest 5 ITM/ATM and 5 OTM options to predict future market direction. Data is sourced form a free public API (Edelweiss)
 
-B. run following commands in cmd  
-npm install  (only first time)
+A. Install Nodejs 
+
+B. run commands
+npm ci
 node server.js  
 
 C. open url http://localhost:3001
 
-D. To stop site, close cmd
+D. To ext site, Ctrl + C on cmd
 
 The important files are:
 1. server.js
