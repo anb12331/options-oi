@@ -1,6 +1,6 @@
 # Put Call OI Difference for Options
 This Node JS application calculates the Put/Call Open Interest difference (similar to Put Call Ratio, or PCR) for Nifty and BankNifty options, averaging on nearest 5 ITM/ATM and 5 OTM options to predict future market direction. Data is persisted daily to IBM ObjectStorage (HDFS equivalent)
-Options Data is sourced form a free public API (Edelweiss)
+Options Data is sourced form a free public API (Edelweiss). App may be run locally or deployed to a IBMCloud (or any) Kubernetes cluster
 
 A. Install Nodejs 
 
